@@ -1,7 +1,7 @@
-import {TTTGame as Game, Player, Observer} from "./model";
+import {TTTGame as Game, Player} from "./app";
 
 class View {
-  constructor(private game: Game, private ctrl: Controller){}
+  constructor(private game: Game){}
 
   display() {
     console.log("displaying...");
@@ -21,7 +21,7 @@ class View {
     }
 
     //show winner, if any
-    let winner = game.getWinner();
+    let winner = this.game.getWinner();
     if(winner !== Player[' ']){
       this.showWinner(winner)
       $('button').attr('disabled','disabled'); //disable all the buttons
@@ -33,45 +33,14 @@ class View {
 
   //callback for clicking
   handleClick(row: number, col: number) {
-    this.ctrl.takeTurn(row, col); //tell controller what to do
+    // ???
   }
 
   showPrompt() {
-    $('#message').html('<p class="lead">'+Player[game.getCurrentPlayer()]+"'s turn. Pick a spot!"+'</p>')
+    $('#message').html('<p class="lead">'+Player[this.game.getCurrentPlayer()]+"'s turn. Pick a spot!"+'</p>')
   }
 
   showWinner(winner: number) {
     $('#message').html('<p class="lead">'+Player[winner]+" is the winner!"+'</p>')
   }
-
-  //observer
-  notify() {
-    this.display();
-  }
 }
-
-class Controller {
-  private view: View;
-  constructor(private game: Game){
-    this.view = new View(game, this);
-    this.game.register(this.view); //connect game and view
-    this.view.display(); //show the initial view
-  }
-
-  //when told what to do, pass it along to the game
-  takeTurn(row: number, col: number) {
-    if(this.game.getWinner() === Player[' '])
-      this.game.makeMove(row, col);
-  }
-}
-
-//run the program!
-let game: Game = new Game();
-
-// game.makeMove(0,0); //x //debugging
-// game.makeMove(0,1); //o
-// game.makeMove(1,0); //x
-// game.makeMove(1,1); //o
-// game.makeMove(2,0); //x
-
-let ctrl: Controller = new Controller(game); //will create the View
